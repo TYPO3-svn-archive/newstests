@@ -35,6 +35,9 @@ require_once(t3lib_extMgm::extPath('tt_news') . 'pi/class.tx_ttnews.php');
  * @author		Oliver Klee <typo3-coding@oliverklee.de>
  */
 class tx_ttnews_testcase  extends tx_phpunit_testcase {
+	/** @var string  the name of the table for the news items */
+	const NEWS_TABLE = 'tt_news';
+
 	/** @var tx_oelib_testingFramework  for creating a fake FE */
 	private $testingFramework;
 
@@ -42,7 +45,9 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 	private $fixture;
 
 	public function setUp() {
-		$this->testingFramework = new tx_oelib_testingFramework('tx_newstests');
+		$this->testingFramework = new tx_oelib_testingFramework(
+			'tx_newstests', array('tt')
+		);
 		$this->testingFramework->createFakeFrontEnd();
 
 		$this->fixture = new tx_ttnews();
@@ -52,6 +57,50 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 		$this->testingFramework->cleanUp();
 
 		unset($this->fixture, $this->testingFramework);
+	}
+
+	//////////////////////
+	// Utitily functions
+	//////////////////////
+
+	/**
+	 * Creates a news item record (without category).
+	 *
+	 * @param  array    the data for the news item, may be empty
+	 *
+	 * @return integer  the UID of the created news item, will be > 0
+	 */
+	private function createNewsItem(array $itemData = array()) {
+		return $this->testingFramework->createRecord(
+			self::NEWS_TABLE, $itemData
+		);
+	}
+
+
+	/////////////////////////////////////
+	// Tests for the utitlity functions
+	/////////////////////////////////////
+
+	public function testCreateNewsItemWithNoDataReturnsUidOfNewsRecord() {
+		$uid = $this->createNewsItem();
+
+		$this->assertEquals(
+			1,
+			$this->testingFramework->countRecords(
+				self::NEWS_TABLE, 'uid = ' . $uid
+			)
+		);
+	}
+
+	public function testCreateNewsWithDataCreatesNewsRecordWithTheGivenData() {
+		$this->createNewsItem(array('title' => 'foo'));
+
+		$this->assertEquals(
+			1,
+			$this->testingFramework->countRecords(
+				self::NEWS_TABLE, 'title = "foo"'
+			)
+		);
 	}
 }
 ?>
