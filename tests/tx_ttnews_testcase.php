@@ -38,14 +38,20 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 	/** @var tx_oelib_testingFramework  for creating a fake FE */
 	private $testingFramework;
 
+	/** @var tx_ttnews  an instance of the class to test */
+	private $fixture;
+
 	public function setUp() {
 		$this->testingFramework = new tx_oelib_testingFramework('tx_newstests');
+		$this->testingFramework->createFakeFrontEnd();
+
+		$this->fixture = new tx_ttnews();
 	}
 
 	public function tearDown() {
 		$this->testingFramework->cleanUp();
 
-		unset($this->testingFramework);
+		unset($this->fixture, $this->testingFramework);
 	}
 }
 ?>
