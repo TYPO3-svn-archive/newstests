@@ -59,6 +59,7 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 		unset($this->fixture, $this->testingFramework);
 	}
 
+
 	//////////////////////
 	// Utitily functions
 	//////////////////////
