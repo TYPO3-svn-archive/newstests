@@ -51,6 +51,7 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 		$this->testingFramework->createFakeFrontEnd();
 
 		$this->fixture = new tx_ttnews();
+		$this->fixture->cObj = $GLOBALS['TSFE']->cObj;
 	}
 
 	public function tearDown() {
@@ -101,6 +102,31 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 			$this->testingFramework->countRecords(
 				self::NEWS_TABLE, 'title = "foo"'
 			)
+		);
+	}
+
+
+	//////////////////////////////
+	// Tests for the single view
+	//////////////////////////////
+
+	public function testSingleViewContainsTitleOfSelectedNewsItem() {
+		$systemFolderPid = $this->testingFramework->createSystemFolder();
+
+		$uid = $this->createNewsItem(array(
+			'title' => 'foo news item',
+			'pid' => $systemFolderPid,
+		));
+		$this->fixture->piVars['tt_news'] = $uid;
+
+		$configuration = array(
+			'code' => 'SINGLE',
+			'templateFile' => 'EXT:tt_news/pi/tt_news_v2_template.html',
+		);
+
+		$this->assertContains(
+			'foo news item',
+			$this->fixture->main_news('', $configuration)
 		);
 	}
 }
