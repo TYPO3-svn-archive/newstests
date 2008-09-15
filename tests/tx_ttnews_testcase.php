@@ -129,5 +129,57 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 			$this->fixture->main_news('', $configuration)
 		);
 	}
+
+
+	////////////////////////////
+	// Tests for the list view
+	////////////////////////////
+
+	public function testListViewContainsTitleOfNewsItemOnSelectedPage() {
+		$systemFolderPid = $this->testingFramework->createSystemFolder();
+		$this->createNewsItem(array(
+			'title' => 'foo news item',
+			'pid' => $systemFolderPid,
+		));
+
+		$configuration = array(
+			'code' => 'LIST',
+			'templateFile' => 'EXT:tt_news/pi/tt_news_v2_template.html',
+			'pid_list' => $systemFolderPid,
+		);
+
+		$this->assertContains(
+			'foo news item',
+			$this->fixture->main_news('', $configuration)
+		);
+	}
+
+	public function testListViewContainsTitlesOfAllNewsItemsOnSelectedPage() {
+		$systemFolderPid = $this->testingFramework->createSystemFolder();
+		$this->createNewsItem(array(
+			'title' => 'foo news item',
+			'pid' => $systemFolderPid,
+		));
+		$this->createNewsItem(array(
+			'title' => 'bar news item',
+			'pid' => $systemFolderPid,
+		));
+
+		$configuration = array(
+			'code' => 'LIST',
+			'templateFile' => 'EXT:tt_news/pi/tt_news_v2_template.html',
+			'pid_list' => $systemFolderPid,
+		);
+
+		$output = $this->fixture->main_news('', $configuration);
+		$this->assertContains(
+			'foo news item',
+			$output
+		);
+		$this->assertContains(
+			'bar news item',
+			$output
+		);
+	}
 }
 ?>
