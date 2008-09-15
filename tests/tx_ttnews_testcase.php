@@ -35,9 +35,6 @@ require_once(t3lib_extMgm::extPath('tt_news') . 'pi/class.tx_ttnews.php');
  * @author		Oliver Klee <typo3-coding@oliverklee.de>
  */
 class tx_ttnews_testcase  extends tx_phpunit_testcase {
-	/** @var string  the name of the table for the news items */
-	const NEWS_TABLE = 'tt_news';
-
 	/** @var tx_oelib_testingFramework  for creating a fake FE */
 	private $testingFramework;
 
@@ -69,7 +66,7 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 		$systemFolderPid = $this->testingFramework->createSystemFolder();
 
 		$uid = $this->testingFramework->createRecord(
-			self::NEWS_TABLE,
+			'tt_news',
 			array(
 				'title' => 'foo news item',
 				'pid' => $systemFolderPid,
@@ -96,7 +93,7 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 	public function testListViewContainsTitleOfNewsItemOnSelectedPage() {
 		$systemFolderPid = $this->testingFramework->createSystemFolder();
 		$this->testingFramework->createRecord(
-			self::NEWS_TABLE,
+			'tt_news',
 			array(
 				'title' => 'foo news item',
 				'pid' => $systemFolderPid,
@@ -118,14 +115,14 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 	public function testListViewContainsTitlesOfAllNewsItemsOnSelectedPage() {
 		$systemFolderPid = $this->testingFramework->createSystemFolder();
 		$this->testingFramework->createRecord(
-			self::NEWS_TABLE,
+			'tt_news',
 			array(
 				'title' => 'foo news item',
 				'pid' => $systemFolderPid,
 			)
 		);
 		$this->testingFramework->createRecord(
-			self::NEWS_TABLE,
+			'tt_news',
 			array(
 				'title' => 'bar news item',
 				'pid' => $systemFolderPid,
