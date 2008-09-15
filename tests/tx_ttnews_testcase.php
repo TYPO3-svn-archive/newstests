@@ -61,51 +61,6 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 	}
 
 
-	//////////////////////
-	// Utitily functions
-	//////////////////////
-
-	/**
-	 * Creates a news item record (without category).
-	 *
-	 * @param  array    the data for the news item, may be empty
-	 *
-	 * @return integer  the UID of the created news item, will be > 0
-	 */
-	private function createNewsItem(array $itemData = array()) {
-		return $this->testingFramework->createRecord(
-			self::NEWS_TABLE, $itemData
-		);
-	}
-
-
-	/////////////////////////////////////
-	// Tests for the utitlity functions
-	/////////////////////////////////////
-
-	public function testCreateNewsItemWithNoDataReturnsUidOfNewsRecord() {
-		$uid = $this->createNewsItem();
-
-		$this->assertEquals(
-			1,
-			$this->testingFramework->countRecords(
-				self::NEWS_TABLE, 'uid = ' . $uid
-			)
-		);
-	}
-
-	public function testCreateNewsWithDataCreatesNewsRecordWithTheGivenData() {
-		$this->createNewsItem(array('title' => 'foo'));
-
-		$this->assertEquals(
-			1,
-			$this->testingFramework->countRecords(
-				self::NEWS_TABLE, 'title = "foo"'
-			)
-		);
-	}
-
-
 	//////////////////////////////
 	// Tests for the single view
 	//////////////////////////////
@@ -113,10 +68,13 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 	public function testSingleViewContainsTitleOfSelectedNewsItem() {
 		$systemFolderPid = $this->testingFramework->createSystemFolder();
 
-		$uid = $this->createNewsItem(array(
-			'title' => 'foo news item',
-			'pid' => $systemFolderPid,
-		));
+		$uid = $this->testingFramework->createRecord(
+			self::NEWS_TABLE,
+			array(
+				'title' => 'foo news item',
+				'pid' => $systemFolderPid,
+			)
+		);
 		$this->fixture->piVars['tt_news'] = $uid;
 
 		$configuration = array(
@@ -137,10 +95,13 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 
 	public function testListViewContainsTitleOfNewsItemOnSelectedPage() {
 		$systemFolderPid = $this->testingFramework->createSystemFolder();
-		$this->createNewsItem(array(
-			'title' => 'foo news item',
-			'pid' => $systemFolderPid,
-		));
+		$this->testingFramework->createRecord(
+			self::NEWS_TABLE,
+			array(
+				'title' => 'foo news item',
+				'pid' => $systemFolderPid,
+			)
+		);
 
 		$configuration = array(
 			'code' => 'LIST',
@@ -156,14 +117,20 @@ class tx_ttnews_testcase  extends tx_phpunit_testcase {
 
 	public function testListViewContainsTitlesOfAllNewsItemsOnSelectedPage() {
 		$systemFolderPid = $this->testingFramework->createSystemFolder();
-		$this->createNewsItem(array(
-			'title' => 'foo news item',
-			'pid' => $systemFolderPid,
-		));
-		$this->createNewsItem(array(
-			'title' => 'bar news item',
-			'pid' => $systemFolderPid,
-		));
+		$this->testingFramework->createRecord(
+			self::NEWS_TABLE,
+			array(
+				'title' => 'foo news item',
+				'pid' => $systemFolderPid,
+			)
+		);
+		$this->testingFramework->createRecord(
+			self::NEWS_TABLE,
+			array(
+				'title' => 'bar news item',
+				'pid' => $systemFolderPid,
+			)
+		);
 
 		$configuration = array(
 			'code' => 'LIST',
